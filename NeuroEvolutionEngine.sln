@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroEvolutionEngine.Domain.NeuralNetwork", "NeuroEvolutionEngine.Domain.NeuralNetwork\NeuroEvolutionEngine.Domain.NeuralNetwork.csproj", "{B7BED68B-82FB-4E80-9D96-081A5DA52EEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroEvolutionEngine.Domaine.GeneticAlgorithm", "NeuroEvolutionEngine.Domaine.GeneticAlgorithm\NeuroEvolutionEngine.Domaine.GeneticAlgorithm.csproj", "{7E12C71A-B370-4599-AB52-3822F39FD095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroEvolutionEngine.Core.Math", "NeuroEvolutionEngine.Core.Math\NeuroEvolutionEngine.Core.Math.csproj", "{21DD64A1-A0BD-4B26-AD82-2AA4CC738DC6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B7BED68B-82FB-4E80-9D96-081A5DA52EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7BED68B-82FB-4E80-9D96-081A5DA52EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7BED68B-82FB-4E80-9D96-081A5DA52EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7BED68B-82FB-4E80-9D96-081A5DA52EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E12C71A-B370-4599-AB52-3822F39FD095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E12C71A-B370-4599-AB52-3822F39FD095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E12C71A-B370-4599-AB52-3822F39FD095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E12C71A-B370-4599-AB52-3822F39FD095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21DD64A1-A0BD-4B26-AD82-2AA4CC738DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21DD64A1-A0BD-4B26-AD82-2AA4CC738DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21DD64A1-A0BD-4B26-AD82-2AA4CC738DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21DD64A1-A0BD-4B26-AD82-2AA4CC738DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD95C3B1-850A-49E0-81C4-A2B2461F2CD2}
+	EndGlobalSection
+EndGlobal
