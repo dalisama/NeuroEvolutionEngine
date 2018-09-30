@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BestBrain forMnisty.94.4.json" />
     <None Include="Mnist dataSet\mnistTest.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

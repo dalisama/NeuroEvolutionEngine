@@ -72,7 +72,7 @@ namespace NeuroEvolutionEngine.Test
 
         }
 
-        private void GetDataFromMnsis(string path, out Matrix[] trainingSet, out Matrix[] TargetSet)
+        private void GetDataFromMnsit(string path, out Matrix[] trainingSet, out Matrix[] TargetSet)
         {
             string[] lines = File.ReadAllLines(path);
             trainingSet = new Matrix[lines.Length];
@@ -101,7 +101,7 @@ namespace NeuroEvolutionEngine.Test
         {
             Matrix[] testSet;
             Matrix[] testTraining;
-            GetDataFromMnsis(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
+            GetDataFromMnsit(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
 
             var brain = new NeuralNetwork(testSet[0].Rows, new int[1] { 60 }, 10, ActivationFunction.LogSigmoid);
             brain.Export(@"c:\", "testttt");
@@ -116,7 +116,7 @@ namespace NeuroEvolutionEngine.Test
         }
 
         [TestMethod]
-        public void ShouldTrainForMnisty()
+        public void ShouldTrainForMnist()
         {
 
             // training data
@@ -125,12 +125,12 @@ namespace NeuroEvolutionEngine.Test
 
             Matrix[] trainingSet;
             Matrix[] targetTraining;
-            GetDataFromMnsis(@".\Mnist dataSet\mnistyTrain.csv", out trainingSet, out targetTraining);
+            GetDataFromMnsit(@".\Mnist dataSet\mnistyTrain.csv", out trainingSet, out targetTraining);
 
 
             Matrix[] testSet;
             Matrix[] testTraining;
-            GetDataFromMnsis(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
+            GetDataFromMnsit(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
 
             var brain = new NeuralNetwork(trainingSet[0].Rows, new int[1] { 60 }, 10, ActivationFunction.LogSigmoid);
            // brain = NeuralNetwork.Import(@"c:\", "Mnisty.json");
