@@ -1,5 +1,6 @@
 ﻿using csMatrix;
 using System;
+using System.Threading.Tasks;
 
 namespace NeuroEvolutionEngine.Core.Math
 {
@@ -15,6 +16,8 @@ namespace NeuroEvolutionEngine.Core.Math
                     mtx[j, i] = fn(mtx[j, i]);
                 }
             }
+
+
         }
 
         public static void  MultiplyElementByElement(this Matrix mtx1, Matrix mtx2)

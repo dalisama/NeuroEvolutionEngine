@@ -1,6 +1,7 @@
 ﻿using csMatrix;
 using NeuroEvolutionEngine.Core.Math;
 using System;
+using System.Linq;
 
 namespace NeuroEvolutionEngine.Domain.NeuralNetwork
 {
@@ -16,16 +17,16 @@ namespace NeuroEvolutionEngine.Domain.NeuralNetwork
         private Matrix[] _tmpOutputs;
 
 
-        public DeepLearning(NeuralNetwork brain, Func<double, double> activationFuntion, double learningRate)
+        public DeepLearning(NeuralNetwork brain, double learningRate)
         {
             Brain = brain;
-            ActivationFuntion = activationFuntion;
+            ActivationFuntion = brain.ActivationFuntion;
             LearningRate = learningRate;
         }
 
         public Matrix[] CalculateMatrixError(Matrix inputs, Matrix target)
         {
-            var output = Brain.FeedForward(inputs, ActivationFuntion, out _tmpOutputs);
+            var output = Brain.FeedForward(inputs, out _tmpOutputs);
             var ErrorsMatrix = new Matrix[Brain.HiddenLayer.Length + 1];
 
             // calculate error at output node of the NN
@@ -64,8 +65,26 @@ namespace NeuroEvolutionEngine.Domain.NeuralNetwork
 
             }
         }
-
-
-
+        public void BulkTraining(Matrix[] inputs, Matrix[] outputs, bool randomize = true)
+        {
+            if (randomize)
+            {
+                Random r = new Random();
+                foreach (int i in Enumerable.Range(0, inputs.Length).OrderBy(x => r.Next()))
+                {
+                    Train(inputs[i], outputs[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    Train(inputs[i], outputs[i]);
+                }
+            }
+        }
     }
+
+
+
 }

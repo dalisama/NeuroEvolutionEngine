@@ -3,66 +3,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeuroEvolutionEngine.Core.Math;
 using NeuroEvolutionEngine.Domain.NeuralNetwork;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace NeuroEvolutionEngine.Test
 {
     [TestClass]
     public class NeuralNetworkTest
     {
-        [TestMethod]
-        public void ShouldReturnSth()
-        {
-            var brain = new NeuralNetwork(5, new int[1] { 5 }, 1);
-            var input = new Matrix(5, 1);
-            input.Rand();
-            Matrix[] outputs;
-            var tm = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
-            Assert.IsNotNull(tm);
-        }
-        [TestMethod]
-        public void ShouldReturnSths()
-        {
-            var brain = new NeuralNetwork(5, new int[5] { 5, 3, 6, 7, 4 }, 1);
-            var input = new Matrix(5, 1);
-            input.Rand();
-            Matrix[] outputs;
-            var tm = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
-            Assert.IsNotNull(tm);
-        }
-        [TestMethod]
-        public void ShouldReturnSth3s()
-        {
-            var brain = new NeuralNetwork(5, new int[5] { 5, 3, 6, 7, 4 }, 2);
-            var input = new Matrix(5, 1);
-            input.Rand();
-            Matrix[] outputs;
-            var tm = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
-            Assert.IsNotNull(tm);
-        }
-        [TestMethod]
-        public void ShouldReturnSthRs()
-        {
-            var brain = new NeuralNetwork(5, new int[5] { 5, 3, 6, 7, 4 }, 2);
 
-            var input = new Matrix(5, 1);
-            input.Rand();
-            var target = new Matrix(2, 1);
-            target.Rand();
-            Matrix[] outputs;
-            var tm = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
-
-            var dl = new DeepLearning(brain, ActivationFunction.LogSigmoid, 10);
-            var tt = dl.CalculateMatrixError(input, target);
-            dl.Train(input, target);
-            var tm2 = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
-            Assert.IsNotNull(tt);
-        }
 
         [TestMethod]
-        public void ShouldReturnXors()
+        public void ShouldTrainForXor()
         {
-            var brain = new NeuralNetwork(2, new int[3] { 5,5,5}, 1);
-            var deepLearning = new DeepLearning(brain, ActivationFunction.LogSigmoid, 0.001);
+
+
+            var brain = new NeuralNetwork(2, new int[3] { 5, 5, 5 }, 1, ActivationFunction.LogSigmoid);
+            var deepLearning = new DeepLearning(brain, 0.00001);
 
             var inputs = new Matrix[4];
 
@@ -98,24 +55,149 @@ namespace NeuroEvolutionEngine.Test
 
             var rand = new Random();
 
-            for (int i = 0; i < 500000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 var t = rand.Next(4);
                 deepLearning.Train(inputs[t], targets[t]);
 
             }
-            
-            var i0 = brain.FeedForward(inputs[0],  ActivationFunction.LogSigmoid);
-            var i2 = brain.FeedForward(inputs[1], ActivationFunction.LogSigmoid);
-            var i3 = brain.FeedForward(inputs[2], ActivationFunction.LogSigmoid);
-            var i4 = brain.FeedForward(inputs[3], ActivationFunction.LogSigmoid);
-            //var tm = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
+
+            var i0 = brain.Prediction(inputs[0]);// epected 0
+            var i2 = brain.Prediction(inputs[1]);// expected 1
+            var i3 = brain.Prediction(inputs[2]);//  expected 1
+            var i4 = brain.Prediction(inputs[3]);//expected 0
+
             Assert.IsFalse(false);
-            //var dl = new DeepLearning(brain, ActivationFunction.LogSigmoid, 10);
-            //var tt = dl.CalculateMatrixError(input, target);
-            //dl.Train(input, target, ActivationFunction.LogSigmoid);
-            //var tm2 = brain.FeedForward(input, ActivationFunction.LogSigmoid, out outputs);
+
 
         }
+
+        private void GetDataFromMnsis(string path, out Matrix[] trainingSet, out Matrix[] TargetSet)
+        {
+            string[] lines = File.ReadAllLines(path);
+            trainingSet = new Matrix[lines.Length];
+            TargetSet = new Matrix[lines.Length];
+
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var tmp = Array.ConvertAll(lines[i].Split(','), s => double.Parse(s));
+                TargetSet[i] = new Matrix(10, 1);
+                TargetSet[i].Zeros();
+
+                TargetSet[i][Convert.ToInt32(tmp[0]), 0] = 1;
+
+                tmp = tmp.Skip(1).ToArray();
+                trainingSet[i] = new Matrix(tmp.Length, 1, tmp);
+                trainingSet[i] = trainingSet[i] / 255;
+
+
+
+
+            }
+        }
+        [TestMethod]
+        public void ShouldExportImportSameBrain()
+        {
+            Matrix[] testSet;
+            Matrix[] testTraining;
+            GetDataFromMnsis(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
+
+            var brain = new NeuralNetwork(testSet[0].Rows, new int[1] { 60 }, 10, ActivationFunction.LogSigmoid);
+            brain.Export(@"c:\", "testttt");
+            var deepLearning = new DeepLearning(brain, 0.001);
+
+            var acc1 = calculateAccurcy(testSet, testTraining, brain);
+            var tmp = NeuralNetwork.Import(@"c:\", "testttt");
+            var acc2 = calculateAccurcy(testSet, testTraining, tmp);
+
+            Assert.AreEqual(acc1, acc2);
+
+        }
+
+        [TestMethod]
+        public void ShouldTrainForMnisty()
+        {
+
+            // training data
+
+
+
+            Matrix[] trainingSet;
+            Matrix[] targetTraining;
+            GetDataFromMnsis(@".\Mnist dataSet\mnistyTrain.csv", out trainingSet, out targetTraining);
+
+
+            Matrix[] testSet;
+            Matrix[] testTraining;
+            GetDataFromMnsis(@".\Mnist dataSet\mnistTest.csv", out testSet, out testTraining);
+
+            var brain = new NeuralNetwork(trainingSet[0].Rows, new int[1] { 60 }, 10, ActivationFunction.LogSigmoid);
+           // brain = NeuralNetwork.Import(@"c:\", "Mnisty.json");
+            var deepLearning = new DeepLearning(brain, 0.001);
+
+
+            var MaxAccurcy = calculateAccurcy(testSet, testTraining, brain);
+
+       
+            System.Diagnostics.Debug.WriteLine("initial accurcy: " + MaxAccurcy);
+            for (int j = 0; j < 10000; j++)
+            {
+
+                deepLearning.BulkTraining(trainingSet, targetTraining);
+
+
+                var Currentaccurcy = calculateAccurcy(testSet, testTraining, brain);
+
+                if (Currentaccurcy > MaxAccurcy)
+                {
+                    MaxAccurcy = Currentaccurcy;
+                    brain.Export(@"c:\", "Mnisty.json");
+                }
+
+
+                System.Diagnostics.Debug.WriteLine("cycle " + j + " current " + Currentaccurcy + " max accurcy " + MaxAccurcy);
+
+            }
+
+            Assert.IsFalse(false);
+
+
+        }
+
+        private double calculateAccurcy(Matrix[] mSet, Matrix[] mLabel, NeuralNetwork brain)
+        {
+
+            var count = 0;
+            var t1 = new Matrix(10, 1);
+            var t11 = new Matrix(10, 1);
+            t1.Zeros();
+            for (int i = 0; i < mSet.Length; i++)
+            {
+                var guessMatrix = brain.Prediction(mSet[i]);
+                var tmp = guessMatrix.Data.Max();
+                var guess = guessMatrix.Data.ToList().IndexOf(tmp);
+
+                tmp = mLabel[i].Data.Max();
+                var result = mLabel[i].Data.ToList().IndexOf(tmp);
+                if (guess == result)
+                {
+                    t1[guess, 0] = t1[guess, 0] + 1;
+                    count++;
+                }
+                else
+                {
+                    t11[guess, 0] = t11[guess, 0] + 1;
+                }
+
+            }
+
+
+
+
+
+            return ((double)count * 100) / mSet.Length;
+        }
+
     }
 }
